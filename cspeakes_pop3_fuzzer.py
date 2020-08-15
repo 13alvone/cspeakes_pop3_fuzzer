@@ -111,7 +111,7 @@ def main():
     password = args.password
     password_wordlist = args.password_wordlist
 
-    if ip == '' or ip == '\n' or ip == 'BLANK':
+    if not ip or ip == '' or ip == '\n':
         print('IP is a required input:\n-i <Target_IP>\t\tIP Address with Pop3 Server')
         exit(1)
 
