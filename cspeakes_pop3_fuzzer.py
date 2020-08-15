@@ -8,7 +8,7 @@ results = {}
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-i', '--ip', help='Target IP Address', default='BLANK', type=str)
+    parser.add_argument('-i', '--ip', help='Target IP Address', type=str)
     parser.add_argument('-p', '--port', help='Target Port', default=110, type=int)
     parser.add_argument('-t', '--wait_time', help='Wait(seconds) between auth attempts', default=1, type=int)
     parser.add_argument('-u', '--username', help='Username to test', nargs='?', type=str)
@@ -115,14 +115,14 @@ def main():
         print('IP is a required input:\n-i <Target_IP>\t\tIP Address with Pop3 Server')
         exit(1)
 
-    if (not username or username == 'BLANK') and (not username_wordlist or username_wordlist == 'BLANK'):
+    if not username and not username_wordlist:
         fail_out('username', 'username_wordlist', 'u', 'U')
-    if username and username_wordlist and username_wordlist != 'BLANK':
+    if username and username_wordlist:
         fail_out('username', 'username_wordlist', 'u', 'U')
 
-    if (not password or password == 'BLANK') and (not password_wordlist or password_wordlist == 'BLANK'):
+    if not password and not password_wordlist:
         fail_out('password', 'password_wordlist', 'pw', 'PW')
-    if password and password_wordlist and password_wordlist != 'BLANK':
+    if password and password_wordlist:
         fail_out('password', 'password_wordlist', 'pw', 'PW')
 
     variables_dict = {
