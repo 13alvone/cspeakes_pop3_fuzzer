@@ -10,7 +10,7 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('-i', '--ip', help='Target IP Address', type=str)
     parser.add_argument('-p', '--port', help='Target Port', default=110, type=int)
-    parser.add_argument('-t', '--wait_time', help='Wait(seconds) between auth attempts', default=1, type=int)
+    parser.add_argument('-t', '--wait_time', help='Wait(seconds) between auth attempts', default=0.1, type=float)
     parser.add_argument('-u', '--username', help='Username to test', nargs='?', type=str)
     parser.add_argument('-U', '--username_wordlist', help='Username list to test', nargs='?', type=str)
     parser.add_argument('-pw', '--password', help='Password to test', nargs='?', type=str)
@@ -29,10 +29,11 @@ def get_initial_socket(ip, port):
 def try_auth(ip, port, username, password, wait_time):
     global results
     _socket = get_initial_socket(ip, port)
-    msg = f'USER {username}'
+    msg = f'USER {username}\r\n'
     _socket.send(msg.encode('utf-8'))
     user_result = _socket.recv(1024)
-    msg = f'PASS {password}'
+    time.sleep(wait_time)
+    msg = f'PASS {password}\r\n'
     _socket.send(msg.encode('utf-8'))
     pass_result = _socket.recv(1024)
     print(f'Username: {username}\t\t{user_result}')
@@ -43,7 +44,6 @@ def try_auth(ip, port, username, password, wait_time):
     if _key in results:
         results[_key][0] += 1
         results[_key][1][username] = password
-    time.sleep(wait_time)
     _socket.close()
 
 
@@ -140,6 +140,7 @@ def main():
     ranking_list = []
     for key in results:
         ranking_list.append(key)
+        print(f'{key} {results[key]}')
     final_results = results[min(ranking_list)][1]
     f_open = open(f'pop3_creds_found_{ip}', 'w')
     for username in final_results:
